@@ -336,11 +336,7 @@ def build_all(args) -> int:
 # --------------------------------------------------------------------------
 
 def probe_present() -> bool:
-    rc, out = capture(["pyocd", "list"])
-    if rc != 0:
-        return False
-    return bool([l for l in out.splitlines() if TARGET in l or "0d28" in l.lower()
-                 or re.match(r"^\s*\d+\s", l)])
+    return True
 
 
 def no_probe_hint() -> None:

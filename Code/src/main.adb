@@ -1,5 +1,13 @@
 with MicroBit.Console; use MicroBit.Console;
+--  with MicroBit.Time; use MicroBit.Time;
+--  with MicroBit.DisplayRT; use MicroBit.DisplayRT;
 use MicroBit;
+with Ada.Real_Time; use Ada.Real_Time;
+with MicroBit.MotorDriver; use MicroBit.MotorDriver;
+with DFR0548;
+
+
+
 -- USN PROJECT TEMPLATE INTELLIGENT REAL-TIME SYSTEMS
 -- Project name: [project name]
 -- Project members: [name, name, .. ]
@@ -18,11 +26,78 @@ use MicroBit;
 --  5) How to integrate your Ada project with a Unity project over USB
 
 -- Open a View > Cross Platforms > Serial Ports to see Put_Line output. Set the baud rate to 115.200
-procedure Main with Priority => 0 is
+
+
+-- Hoved:
+--  procedure Main is 
+--  teller : Integer := 0;
+--  Input : Character;
+
+--  begin
+   
+--     Put_Line ("TEST START");
+--     loop
+--        Put_Line("hello from Hubert");
+
+--        if(teller = Integer'Last) then
+--           goto EndLoop;
+--        end if;
+
+--        teller := teller + 1;
+--        Put_Line("count: ");
+--        Put_Line(Integer'Image(teller));
+      
+--        Put_Line("Write your input: ");
+--        Get(Input);
+
+--        exit when Input = '1';
+
+--        Put("Output: ");
+--        Put(Input);
+--        New_Line;
+
+--     end loop;
+--     <<EndLoop>> null;
+--  end Main;
+
+
+procedure Main is
 
 begin
-   Put_Line (" <-- The zero means: Let's get started...");
+   MotorDriver.Servo(1,90);
+   delay 1.0; -- equivalent of Time.Sleep(1000) = 1 second
+
    loop
-      null;
+      -- DEMONSTRATION ROUTINE 4 MOTORS (useful for checking your wiring)
+      MotorDriver.Drive(Forward,(4095,0,0,0)); --right front wheel to M4
+      Console.Put_Line("RF");
+      delay 1.0;
+      MotorDriver.Drive(Forward,(0,4095,0,0)); --right back wheel to M3
+      Console.Put_Line("RB");
+      delay 1.0;
+      MotorDriver.Drive(Forward,(0,0,4095,0)); --left front wheel to M2
+      Console.Put_Line("LF");
+      delay 1.0;
+      MotorDriver.Drive(Forward,(0,0,0,4095)); --left back wheel to M1
+      Console.Put_Line("LB");
+      delay 1.0;
+      MotorDriver.Drive(Stop);
+
+      -- DEMONSTRATION ROUTINE SERVO
+      for I in reverse DFR0548.Degrees range 0..90 loop
+         MotorDriver.Servo(1,I);
+          delay 0.02; --20 ms
+      end loop;
+
+      for I in DFR0548.Degrees range 90..180 loop
+         MotorDriver.Servo(1,I);
+         delay 0.02; --20 ms
+      end loop;
+
+      for I in reverse DFR0548.Degrees range 90..180 loop
+         MotorDriver.Servo(1,I);
+          delay 0.02; --20 ms
+      end loop;
+
    end loop;
 end Main;
