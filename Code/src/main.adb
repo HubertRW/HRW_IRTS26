@@ -1,10 +1,13 @@
 with MicroBit.Console; use MicroBit.Console;
 --  with MicroBit.Time; use MicroBit.Time;
---  with MicroBit.DisplayRT; use MicroBit.DisplayRT;
+with MicroBit.DisplayRT; use MicroBit.DisplayRT;
 use MicroBit;
 with Ada.Real_Time; use Ada.Real_Time;
 with MicroBit.MotorDriver; use MicroBit.MotorDriver;
+with MicroBit.Ultrasonic;
+with MicroBit.Types; use MicroBit.Types;
 with DFR0548;
+with MicroBit.Music; use MicroBit.Music; -- hobby music???
 
 
 
@@ -28,76 +31,54 @@ with DFR0548;
 -- Open a View > Cross Platforms > Serial Ports to see Put_Line output. Set the baud rate to 115.200
 
 
--- Hoved:
---  procedure Main is 
---  teller : Integer := 0;
---  Input : Character;
-
---  begin
-   
---     Put_Line ("TEST START");
---     loop
---        Put_Line("hello from Hubert");
-
---        if(teller = Integer'Last) then
---           goto EndLoop;
---        end if;
-
---        teller := teller + 1;
---        Put_Line("count: ");
---        Put_Line(Integer'Image(teller));
-      
---        Put_Line("Write your input: ");
---        Get(Input);
-
---        exit when Input = '1';
-
---        Put("Output: ");
---        Put(Input);
---        New_Line;
-
---     end loop;
---     <<EndLoop>> null;
---  end Main;
 
 
 procedure Main is
+   package sensor1 is new Ultrasonic(MB_P16, MB_P0); --front
+   package sensor2 is new Ultrasonic(MB_P13, MB_P2); --right
+   package sensor3 is new Ultrasonic(MB_P14, MB_P1); --left
+
+   Distance : Distance_cm := 10;
 
 begin
    MotorDriver.Servo(1,90);
    delay 1.0; -- equivalent of Time.Sleep(1000) = 1 second
 
    loop
+
       -- DEMONSTRATION ROUTINE 4 MOTORS (useful for checking your wiring)
-      MotorDriver.Drive(Forward,(4095,0,0,0)); --right front wheel to M4
-      Console.Put_Line("RF");
-      delay 1.0;
-      MotorDriver.Drive(Forward,(0,4095,0,0)); --right back wheel to M3
-      Console.Put_Line("RB");
-      delay 1.0;
-      MotorDriver.Drive(Forward,(0,0,4095,0)); --left front wheel to M2
-      Console.Put_Line("LF");
-      delay 1.0;
-      MotorDriver.Drive(Forward,(0,0,0,4095)); --left back wheel to M1
-      Console.Put_Line("LB");
-      delay 1.0;
-      MotorDriver.Drive(Stop);
+      --  MotorDriver.Drive(Forward,(4095,0,0,0)); --right front wheel to M4
+      --  Console.Put_Line("RF");
+      --  delay 1.0;
+      --  MotorDriver.Drive(Forward,(0,4095,0,0)); --right back wheel to M3
+      --  Console.Put_Line("RB");
+      --  delay 1.0;
+      --  MotorDriver.Drive(Forward,(0,0,4095,0)); --left front wheel to M2
+      --  Console.Put_Line("LF");
+      --  delay 1.0;
+      --  MotorDriver.Drive(Forward,(0,0,0,4095)); --left back wheel to M1
+      --  Console.Put_Line("LB");
+      --  delay 1.0;
+      --  MotorDriver.Drive(Stop);
 
-      -- DEMONSTRATION ROUTINE SERVO
-      for I in reverse DFR0548.Degrees range 0..90 loop
-         MotorDriver.Servo(1,I);
-          delay 0.02; --20 ms
-      end loop;
+      MotorDriver.Drive(Forward,(4095,4095,4095,4095));
 
-      for I in DFR0548.Degrees range 90..180 loop
-         MotorDriver.Servo(1,I);
-         delay 0.02; --20 ms
-      end loop;
-
-      for I in reverse DFR0548.Degrees range 90..180 loop
-         MotorDriver.Servo(1,I);
-          delay 0.02; --20 ms
-      end loop;
-
+      -- simple test
+      if sensor1.read < Distance then -- front ultrasonic sensor
+         MotorDriver.Drive(Lateral_Left,(4095,4095,4095,4095));
+         delay 0.2;
+      elsif sensor2.read < Distance then --detection at the right
+         MotorDriver.Drive(Forward_Left,(4095,4095,4095,4095));
+         --  MotorDriver.Drive(Rotating_Right,(0,0,4095,0));
+         --  MotorDriver.Drive(Rotating_Right,(0,0,0,4095));
+         delay 0.2;
+      elsif sensor3.read < Distance then -- detection at the left
+         MotorDriver.Drive(Rotating_Right,(4095,4095,4095,4095));
+         --  MotorDriver.Drive(Backward_Left,(0,4095,0,0));
+         --  MotorDriver.Drive(Backward_Left,(0,0,4095,0));
+         --  MotorDriver.Drive(Backward_Left,(0,0,0,4095));
+         delay 0.2;
+      end if;
+      
    end loop;
 end Main;
