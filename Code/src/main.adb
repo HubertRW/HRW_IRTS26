@@ -7,7 +7,7 @@ with MicroBit.MotorDriver; use MicroBit.MotorDriver;
 with MicroBit.Ultrasonic;
 with MicroBit.Types; use MicroBit.Types;
 with DFR0548;
-with MicroBit.Music; use MicroBit.Music; -- hobby music???
+with MicroBit.Music; use MicroBit.Music;
 
 
 
@@ -33,13 +33,17 @@ with MicroBit.Music; use MicroBit.Music; -- hobby music???
 
 
 
-procedure Main is
+procedure Main with Priority => 0 is
    package sensor1 is new Ultrasonic(MB_P16, MB_P0); --front
    package sensor2 is new Ultrasonic(MB_P13, MB_P2); --right
    package sensor3 is new Ultrasonic(MB_P14, MB_P1); --left
 
    Distance : Distance_cm := 10;
 
+   AlarmLeft : MicroBit.Music.Melody := ((G5, 100), (C5, 200), (F5,50), (A5,50));
+   AlarmRight : MicroBit.Music.Melody := ((B4, 50), (A4, 100), (B4, 50), (A4, 100));
+   AlarmFront : MicroBit.Music.Melody := ((DS5, 100),(CS5, 50),(DS5, 100),(FS5,50));
+   
 begin
    MotorDriver.Servo(1,90);
    delay 1.0; -- equivalent of Time.Sleep(1000) = 1 second
@@ -63,21 +67,19 @@ begin
 
       MotorDriver.Drive(Forward,(4095,4095,4095,4095));
 
-      -- simple test
+      -- simple test, can and will be improved
       if sensor1.read < Distance then -- front ultrasonic sensor
          MotorDriver.Drive(Lateral_Left,(4095,4095,4095,4095));
-         delay 0.2;
+         MicroBit.Music.Play(27, AlarmFront);
+         delay 0.05;
       elsif sensor2.read < Distance then --detection at the right
          MotorDriver.Drive(Forward_Left,(4095,4095,4095,4095));
-         --  MotorDriver.Drive(Rotating_Right,(0,0,4095,0));
-         --  MotorDriver.Drive(Rotating_Right,(0,0,0,4095));
-         delay 0.2;
+         MicroBit.Music.Play(27, AlarmRight);
+         delay 0.05;
       elsif sensor3.read < Distance then -- detection at the left
          MotorDriver.Drive(Rotating_Right,(4095,4095,4095,4095));
-         --  MotorDriver.Drive(Backward_Left,(0,4095,0,0));
-         --  MotorDriver.Drive(Backward_Left,(0,0,4095,0));
-         --  MotorDriver.Drive(Backward_Left,(0,0,0,4095));
-         delay 0.2;
+         MicroBit.Music.Play(27, AlarmLeft);
+         delay 0.05;
       end if;
       
    end loop;
