@@ -3,12 +3,12 @@ package body Controller is
 
    protected body MotorController is
 
-      function GetState is
+      function GetState return CarState is
       begin
          return CurrentState;
       end GetState;
 
-      function SetState(state : CarState) is
+      procedure SetState(state : CarState) is
       begin
          CurrentState := state;
       end SetState;

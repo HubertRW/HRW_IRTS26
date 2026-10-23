@@ -1,11 +1,10 @@
-with MicroBit.Ultrasonic; use MicroBit.Ultrasonic;
 with Microbit.Types; use MicroBit.Types;
 with Ada.Real_Time; use Ada.Real_Time;
 
 
 package Brain is 
 
-   subtype sensor_distance is Distance_cm range 0.0 .. 100.0;
+   subtype sensor_distance is Distance_cm range 0 .. 100;
 
    type SensorData is record
       LeftDistance : sensor_distance;

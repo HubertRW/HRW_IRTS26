@@ -1,13 +1,9 @@
 with Ada.Real_Time; use Ada.Real_Time;
-with MicroBit.Ultrasonic; use MicroBit.Ultrasonic;
 with Brain; use Brain;
 
 package body Sense is
 
    CurrentTime : Time;
-   FrontReading : Brain.sensor_distance;
-   RightReading : sensor_distance;
-   LeftReading : sensor_distance;
 
    task body ReadSensorsTask is
    begin
@@ -23,7 +19,7 @@ package body Sense is
          LeftReading := Brain.sensor_distance(sensor3.read);
          delay 0.05;
 
-         Brain.Insert(FrontReading, RightReading, LeftReading);
+         Brain.BrainData.Insert(FrontReading, RightReading, LeftReading);
 
          delay until CurrentTime + Milliseconds(50); -- total: 150ms + 50ms;
       end loop;

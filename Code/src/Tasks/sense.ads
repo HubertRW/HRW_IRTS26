@@ -1,4 +1,5 @@
 with Ada.Real_Time; use Ada.Real_Time;
+with MicroBit; use MicroBit;
 with MicroBit.Ultrasonic; use MicroBit.Ultrasonic;
 With Brain;
 

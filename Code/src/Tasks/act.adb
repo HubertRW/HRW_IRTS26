@@ -6,9 +6,9 @@ with DFR0548;
 package body Act is
 
    CurrentTime : Time;
-   StateNow : MotorController.CarState;
+   StateNow : Controller.CarState;
 
-   procedure Move(state: MotorController.CarState) is
+   procedure Move(state: Controller.CarState) is
    begin 
       case state is 
             when Idle => 
@@ -20,7 +20,7 @@ package body Act is
             when RightCol =>
                MotorDriver.Drive(Forward_Left,(4095,4095,4095,4095));
             when LeftCol =>
-               MyMotorDriver.Drive(Right,(4095,4095,4095,4095));
+               MotorDriver.Drive(Right,(4095,4095,4095,4095));
          end case;
    end Move;
 
