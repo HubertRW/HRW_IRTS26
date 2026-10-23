@@ -40,6 +40,7 @@ procedure Main with Priority => 0 is
 
    Distance : Distance_cm := 10;
 
+   -- timing of alarm sounds: do they delay our system?
    AlarmLeft : MicroBit.Music.Melody := ((G5, 100), (C5, 200), (F5,50), (A5,50));
    AlarmRight : MicroBit.Music.Melody := ((B4, 50), (A4, 100), (B4, 50), (A4, 100));
    AlarmFront : MicroBit.Music.Melody := ((DS5, 100),(CS5, 50),(DS5, 100),(FS5,50));
@@ -77,7 +78,7 @@ begin
          MicroBit.Music.Play(27, AlarmRight);
          delay 0.05;
       elsif sensor3.read < Distance then -- detection at the left
-         MotorDriver.Drive(Rotating_Right,(4095,4095,4095,4095));
+         MotorDriver.Drive(Right,(4095,4095,4095,4095));
          MicroBit.Music.Play(27, AlarmLeft);
          delay 0.05;
       end if;
