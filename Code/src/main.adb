@@ -9,7 +9,9 @@ with MicroBit.Types; use MicroBit.Types;
 with DFR0548;
 with MicroBit.Music; use MicroBit.Music;
 
-
+with Sense;
+with Think;
+with Act;
 
 -- USN PROJECT TEMPLATE INTELLIGENT REAL-TIME SYSTEMS
 -- Project name: [project name]
@@ -34,39 +36,33 @@ with MicroBit.Music; use MicroBit.Music;
 
 
 procedure Main with Priority => 0 is
-   package sensor1 is new Ultrasonic(MB_P16, MB_P0); --front
-   package sensor2 is new Ultrasonic(MB_P13, MB_P2); --right
-   package sensor3 is new Ultrasonic(MB_P14, MB_P1); --left
-
-   Distance : Distance_cm := 10;
-
-   -- timing of alarm sounds: do they delay our system?
-   AlarmLeft : MicroBit.Music.Melody := ((G5, 100), (C5, 200), (F5,50), (A5,50));
-   AlarmRight : MicroBit.Music.Melody := ((B4, 50), (A4, 100), (B4, 50), (A4, 100));
-   AlarmFront : MicroBit.Music.Melody := ((DS5, 100),(CS5, 50),(DS5, 100),(FS5,50));
    
+   Start : Time;
+
 begin
-   MotorDriver.Servo(1,90);
-   delay 1.0; -- equivalent of Time.Sleep(1000) = 1 second
+
 
    loop
 
-      MotorDriver.Drive(Forward,(4095,4095,4095,4095));
+      --  MotorDriver.Drive(Forward,(4095,4095,4095,4095));
 
       -- simple test, can and will be improved
-      if sensor1.read < Distance then -- front ultrasonic sensor
-         MotorDriver.Drive(Lateral_Left,(4095,4095,4095,4095));
-         MicroBit.Music.Play(27, AlarmFront);
-         delay 0.05;
-      elsif sensor2.read < Distance then --detection at the right
-         MotorDriver.Drive(Forward_Left,(4095,4095,4095,4095));
-         MicroBit.Music.Play(27, AlarmRight);
-         delay 0.05;
-      elsif sensor3.read < Distance then -- detection at the left
-         MotorDriver.Drive(Right,(4095,4095,4095,4095));
-         MicroBit.Music.Play(27, AlarmLeft);
-         delay 0.05;
-      end if;
-      
+      --  if sensor1.read < Distance then -- front ultrasonic sensor
+      --     MotorDriver.Drive(Lateral_Left,(4095,4095,4095,4095));
+      --     MicroBit.Music.Play(27, AlarmFront);
+      --     delay 0.05;
+      --  elsif sensor2.read < Distance then --detection at the right
+      --     MotorDriver.Drive(Forward_Left,(4095,4095,4095,4095));
+      --     MicroBit.Music.Play(27, AlarmRight);
+      --     delay 0.05;
+      --  elsif sensor3.read < Distance then -- detection at the left
+      --     MotorDriver.Drive(Right,(4095,4095,4095,4095));
+      --     MicroBit.Music.Play(27, AlarmLeft);
+      --     delay 0.05;
+      --  end if;
+
+      Start := Clock;
+
+      delay until Start + Milliseconds(10);
    end loop;
 end Main;

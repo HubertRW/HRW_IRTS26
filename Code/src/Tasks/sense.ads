@@ -1,6 +1,6 @@
 with Ada.Real_Time; use Ada.Real_Time;
 with MicroBit; use MicroBit;
-with MicroBit.Ultrasonic; use MicroBit.Ultrasonic;
+with MicroBit.Ultrasonic;
 With Brain;
 
 package Sense is
@@ -13,7 +13,7 @@ package Sense is
    package sensor2 is new Ultrasonic(MB_P13, MB_P2); --right
    package sensor3 is new Ultrasonic(MB_P14, MB_P1); --left
 
-   task ReadSensorsTask with Priority =>3;
+   task ReadSensorsTask with Priority => 1;
 
    -- warnings from documentation: 
    -- there is a blocking by 10us (microseconds) for every read

@@ -12,7 +12,7 @@ package Brain is
       FrontDistance : sensor_distance;
    end record;
 
-   type Index is new Integer range 0 .. 10000;
+   type Index is new Integer range 0 .. 1000;
    type DataBuffer is array(Index) of SensorData;
    
    protected BrainData is
