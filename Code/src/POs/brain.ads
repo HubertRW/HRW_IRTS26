@@ -4,12 +4,14 @@ with Ada.Real_Time; use Ada.Real_Time;
 
 package Brain is 
 
-   subtype sensor_distance is Distance_cm range 0 .. 100;
+   subtype sensor_distance is Distance_cm;
 
    type SensorData is record
       LeftDistance : sensor_distance;
       RightDistance : sensor_distance;
       FrontDistance : sensor_distance;
+      Recorded_At : Time;
+      Valid_Until : Time;
    end record;
 
    type Index is new Integer range 0 .. 1000;
@@ -17,7 +19,8 @@ package Brain is
    
    protected BrainData is
 
-      entry Insert(front : in sensor_distance; right : in sensor_distance; left: in sensor_distance);
+      entry Insert(front : in sensor_distance; right : in sensor_distance;
+                   left : in sensor_distance; Valid_Until : in Time := Time_Last);
       entry Get(values : out SensorData);
 
    private

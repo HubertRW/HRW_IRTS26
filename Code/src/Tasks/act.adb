@@ -45,11 +45,9 @@ package body Act is
       MicroBit.MotorDriver.Servo(1,90);
 
          loop
-            --  CurrentTime := Clock;
+            CurrentTime := Clock;
             StartCPU := Clock;
 
-            MicroBit.MotorDriver.Drive(Forward,(4095,4095,4095,4095));
-            
             StateNow := MotorController.GetState;
 
             Move(StateNow);
@@ -59,8 +57,8 @@ package body Act is
 
             MicroBit.Console.Put_Line("Act Elapsed Time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
 
-            --  delay until CurrentTime + Milliseconds(50);
-            delay 0.1;
+            delay until CurrentTime + Milliseconds(50);
+
          end loop;
 
    end ActTask;

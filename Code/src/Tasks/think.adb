@@ -14,12 +14,21 @@ package body Think is
 
       Brain.BrainData.Get(data);
 
-      if data.FrontDistance <= Threshold then
-         Controller.MotorController.SetState(Controller.ForwardCol);
+      if Ada.Real_Time.Clock - data.Recorded_At >= Command_Timeout
+        or else Ada.Real_Time.Clock >= data.Valid_Until
+        or else data.FrontDistance < 2
+        or else data.RightDistance < 2
+        or else data.LeftDistance < 2
+      then
+         Controller.MotorController.SetState(Controller.Idle, data.Valid_Until);
+      elsif data.FrontDistance <= Threshold then
+         Controller.MotorController.SetState(Controller.ForwardCol, data.Valid_Until);
       elsif data.RightDistance <= Threshold then
-         Controller.MotorController.SetState(Controller.RightCol);
+         Controller.MotorController.SetState(Controller.RightCol, data.Valid_Until);
       elsif data.LeftDistance <= Threshold then
-         Controller.MotorController.SetState(Controller.LeftCol);
+         Controller.MotorController.SetState(Controller.LeftCol, data.Valid_Until);
+      else
+         Controller.MotorController.SetState(Controller.Driving, data.Valid_Until);
       end if;
 
    end SelectState;
@@ -33,7 +42,7 @@ package body Think is
       
    begin 
       loop 
-         --  CurrentTime := Clock;
+         CurrentTime := Clock;
          StartCPU := Clock;
 
          SelectState;
@@ -43,8 +52,7 @@ package body Think is
 
          MicroBit.Console.Put_Line("Think Elapsed time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
 
-         delay 0.1;
-         --  delay until CurrentTime + Milliseconds(50);
+         delay until CurrentTime + Milliseconds(100);
       end loop;
    end ThinkTask;
 
