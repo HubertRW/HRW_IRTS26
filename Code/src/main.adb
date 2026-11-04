@@ -12,6 +12,7 @@ with MicroBit.Music; use MicroBit.Music;
 with Sense;
 with Think;
 with Act;
+with Alarm;
 
 -- USN PROJECT TEMPLATE INTELLIGENT REAL-TIME SYSTEMS
 -- Project name: [project name]
@@ -43,23 +44,6 @@ begin
 
 
    loop
-
-      --  MotorDriver.Drive(Forward,(4095,4095,4095,4095));
-
-      -- simple test, can and will be improved
-      --  if sensor1.read < Distance then -- front ultrasonic sensor
-      --     MotorDriver.Drive(Lateral_Left,(4095,4095,4095,4095));
-      --     MicroBit.Music.Play(27, AlarmFront);
-      --     delay 0.05;
-      --  elsif sensor2.read < Distance then --detection at the right
-      --     MotorDriver.Drive(Forward_Left,(4095,4095,4095,4095));
-      --     MicroBit.Music.Play(27, AlarmRight);
-      --     delay 0.05;
-      --  elsif sensor3.read < Distance then -- detection at the left
-      --     MotorDriver.Drive(Right,(4095,4095,4095,4095));
-      --     MicroBit.Music.Play(27, AlarmLeft);
-      --     delay 0.05;
-      --  end if;
 
       Start := Clock;
 

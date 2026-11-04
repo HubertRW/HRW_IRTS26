@@ -3,7 +3,7 @@ with Controller;
 
 package Act is
 
-   task ActTask with Priority => 3;
+   task ActTask with Priority => 4;
    procedure Move(state : Controller.CarState);
 
 end Act;

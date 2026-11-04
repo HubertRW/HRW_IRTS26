@@ -1,30 +1,18 @@
 package body Brain is
+   function Is_Fresh (Reading : Sensor_Reading; Now : Time) return Boolean is
+     (Reading.Distance >= 2
+      and then Reading.Recorded_At <= Now
+      and then Now < Reading.Valid_Until);
 
    protected body BrainData is
-      
-      entry Insert(front : in sensor_distance; right : in sensor_distance;
-                   left : in sensor_distance; Valid_Until : in Time := Time_Last)
-        when Count < Max_Capacity is
+      procedure Update (Sensor : Sensor_Id; Reading : Sensor_Reading) is
       begin
-         BrainBuffer(Head).FrontDistance := front;
-         BrainBuffer(Head).RightDistance := right;
-         BrainBuffer(Head).LeftDistance := left;
-         BrainBuffer(Head).Recorded_At := Ada.Real_Time.Clock;
-         BrainBuffer(Head).Valid_Until := Valid_Until;
+         Latest (Sensor) := Reading;
+      end Update;
 
-         Head := (Head + 1) mod Max_Capacity;
-         Count := Count + 1;
-
-      end Insert;
-
-      entry Get(values : out SensorData) when Count > 0 is
+      procedure Get (Values : out SensorData) is
       begin
-         values := BrainBuffer(Tail);
-         Tail := (Tail + 1) mod Max_Capacity;
-         Count := Count - 1;
-
+         Values := Latest;
       end Get;
-
    end BrainData;
-
 end Brain;

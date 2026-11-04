@@ -1,0 +1,11 @@
+project Snapshot_Tests is
+   for Source_Dirs use (".", "..", "../POs", "../Tasks");
+   for Object_Dir use "../../obj/snapshot-tests";
+   for Exec_Dir use "../../obj/snapshot-tests";
+   for Main use
+     ("snapshot_pipeline_test.adb", "sensor_filter_test.adb",
+      "controller_watchdog_test.adb");
+   package Compiler is
+      for Default_Switches ("Ada") use ("-gnat2022", "-gnata", "-g", "-gnatwa");
+   end Compiler;
+end Snapshot_Tests;
