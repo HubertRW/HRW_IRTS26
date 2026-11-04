@@ -76,8 +76,8 @@ package body Alarm is
          Elapsed_Time := EndTime - CurrentTime;
          Elapsed_CPU := StopCPU - StartCPU;
 
-         --  Put_Line("AlarmTask Elapsed Time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
-         --  Put_Line("AlarmTask CPU Time: " & Duration'Image(To_Duration(Elapsed_CPU)) & " seconds");
+         Put_Line("AlarmTask Elapsed Time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
+         Put_Line("AlarmTask CPU Time: " & Duration'Image(To_Duration(Elapsed_CPU)) & " seconds");
 
 
          delay until Ada.Real_Time.Clock + Check_Interval;

@@ -61,8 +61,8 @@ package body Sense is
          Elapsed_Time := StopTime - CurrentTime;
          Elapsed_CPU := StopCPU - StartCPU;
 
-         --  MicroBit.Console.Put_Line("Sense Elapsed time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
-         --  MicroBit.Console.Put_Line("Sense CPU time: " & Duration'Image(To_Duration(Elapsed_CPU)) & " seconds");
+         MicroBit.Console.Put_Line("Sense Elapsed time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
+         MicroBit.Console.Put_Line("Sense CPU time: " & Duration'Image(To_Duration(Elapsed_CPU)) & " seconds");
 
          delay until CurrentTime + Milliseconds(200);
       end loop;

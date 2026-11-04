@@ -50,8 +50,8 @@ package body Act is
             Elapsed_Time := StopTime - CurrentTime;
             TimeCPU := StopCPU - StartCPU;
 
-            --  MicroBit.Console.Put_Line("Act Elapsed Time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
-            --  MicroBit.Console.Put_Line("Act CPU time: " & Duration'Image(To_Duration(TimeCPU)) & " seconds");
+            MicroBit.Console.Put_Line("Act Elapsed Time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
+            MicroBit.Console.Put_Line("Act CPU time: " & Duration'Image(To_Duration(TimeCPU)) & " seconds");
 
             delay until CurrentTime + Milliseconds(50);
 
