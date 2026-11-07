@@ -1,6 +1,6 @@
 package body Brain is
    function Is_Fresh (Reading : Sensor_Reading; Now : Time) return Boolean is
-     (Reading.Distance >= 2
+     (Reading.Distance >= 0
       and then Reading.Recorded_At <= Now
       and then Now < Reading.Valid_Until);
 

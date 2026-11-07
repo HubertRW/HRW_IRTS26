@@ -15,12 +15,22 @@ package body Controller is
          return CurrentState;
       end GetState;
 
+      function GetFrontNext return AfterFrontState is
+      begin
+         return NextFront;
+      end GetFrontNext;
+      
       procedure SetState(state : CarState; Valid_Until : Time := Time_Last) is
       begin
          CurrentState := state;
          Last_Updated := Ada.Real_Time.Clock;
          Reading_Expiry := Valid_Until;
       end SetState;
+
+      procedure SetAfterFront(next_state : AfterFrontState) is
+         begin
+            NextFront := next_state;
+         end SetAfterFront;
 
    end MotorController;
 

@@ -3,32 +3,41 @@ with Ada.Real_Time; use Ada.Real_Time;
 with Controller; use Controller;
 with Ada.Execution_Time; use Ada.Execution_Time;
 with MicroBit.Console; use MicroBit.Console;
+with MicroBit.MotorDriver;
 
 package body Think is
-   function Evaluate
-     (Data : SensorData; Now : Time;
-      Threshold : sensor_distance) return Decision
+   function Evaluate(Data : SensorData; Now : Time; Threshold : sensor_distance) return Decision
    is
-      Result : Decision := (State => Driving, Valid_Until => Time_Last);
+      Result : Decision := (State => Driving, Valid_Until => Time_Last, AFState => ReverseShift);
    begin
       for Sensor in Sensor_Id loop
          if not Is_Fresh (Data (Sensor), Now) then
             -- Unknown is not clear space, nor a valid collision measurement.
-            return (State => Idle, Valid_Until => Time_First);
+            return (State => Idle, Valid_Until => Time_First, AFState => Controller.ReverseShift);
          end if;
          if Data (Sensor).Valid_Until < Result.Valid_Until then
             Result.Valid_Until := Data (Sensor).Valid_Until;
          end if;
       end loop;
 
-      -- Preserve the existing front/right/left collision priority.
-      if Data (Front).Distance <= Threshold then
+
+      if Data(Front).Distance <= Threshold then
          Result.State := ForwardCol;
-      elsif Data (Right).Distance <= Threshold then
+
+         if Data(Right).Distance > Data(Left).Distance then
+            Result.AFState := RightShift;
+         elsif Data(Left).Distance > Data(Right).Distance then
+            Result.AFState := LeftShift;
+         else
+            Result.AFState := ReverseShift;
+         end if;
+
+      elsif Data(Right).Distance <= Threshold then
          Result.State := RightCol;
-      elsif Data (Left).Distance <= Threshold then
+      elsif Data(Left).Distance <= Threshold then
          Result.State := LeftCol;
       end if;
+
       return Result;
    end Evaluate;
 
@@ -36,10 +45,13 @@ package body Think is
       Data : Brain.SensorData;
       Choice : Decision;
    begin
+
       Brain.BrainData.Get (Data);
-      Choice := Evaluate
-        (Data, Ada.Real_Time.Clock, Threshold);
+      Choice := Evaluate(Data, Ada.Real_Time.Clock, Threshold);
+      
       MotorController.SetState (Choice.State, Choice.Valid_Until);
+      MotorController.SetAfterFront(Choice.AFState);
+
    end SelectState;
 
 

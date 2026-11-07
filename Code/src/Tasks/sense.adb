@@ -15,23 +15,18 @@ package body Sense is
       Front_History, Right_History, Left_History : Sensor_Filter.History;
       Acquisition_Start : Time;
 
-      procedure Publish
-        (Sensor : Sensor_Id; Reading : in out sensor_distance;
+      procedure Publish(Sensor : Sensor_Id; Reading : in out sensor_distance;
          History : in out Sensor_Filter.History; Started_At : Time)
       is
          Sample : Sensor_Reading;
       begin
          if Filter_Enabled then
-            -- A retained reading keeps the original acquisition timestamp.
-            -- Failed attempts must not make an old distance look new.
             Sensor_Filter.Observe (History, Reading, Started_At);
             Reading := Sensor_Filter.Value (History, Ada.Real_Time.Clock);
             Sample := (Distance => Reading,
                        Recorded_At => History.Last_Valid_At,
                        Valid_Until => Sensor_Filter.Valid_Until (History));
          else
-            -- Age starts before acquisition, not after a potentially slow read.
-            -- Zero remains invalid and will make Think request Idle.
             Sample := (Distance => Reading,
                        Recorded_At => Started_At,
                        Valid_Until => Started_At + Sensor_Filter.Max_Age);
@@ -60,6 +55,10 @@ package body Sense is
 
          Elapsed_Time := StopTime - CurrentTime;
          Elapsed_CPU := StopCPU - StartCPU;
+
+         --  MicroBit.Console.Put_Line("Front: " & Brain.sensor_distance'Image(FrontReading));
+         --  MicroBit.Console.Put_Line("Right: " & Brain.sensor_distance'Image(RightReading));
+         --  MicroBit.Console.Put_Line("Left: " & Brain.sensor_distance'Image(LeftReading));
 
          MicroBit.Console.Put_Line("Sense Elapsed time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
          MicroBit.Console.Put_Line("Sense CPU time: " & Duration'Image(To_Duration(Elapsed_CPU)) & " seconds");

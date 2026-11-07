@@ -8,11 +8,9 @@ package body Alarm is
    AlarmFront : constant Melody := ((G5, 25), (C5, 50), (F5, 50), (A5, 25));
    AlarmRight : constant Melody := ((B4, 25), (A4, 50), (B4, 25), (A4, 50));
    AlarmLeft : constant Melody := ((DS5, 50), (CS5, 25), (DS5, 50), (FS5, 25));
-   Check_Interval : constant Time_Span := Milliseconds (300); -- was initially 10ms, then 50ms
+   Check_Interval : constant Time_Span := Milliseconds (300);
 
-   -- Use the pitch overload, not the blocking note/melody overloads.
-   -- Only this task owns audio output. MotorController is read briefly,
-   -- and no protected operation contains playback or a delay.
+
    procedure Play_While_Current (Expected : CarState; Sound : Melody) is
       Note_End, Wake_At, Now : Time;
    begin
@@ -50,12 +48,14 @@ package body Alarm is
       MicroBit.Music.Play (27, Rest);
       loop
 
-        CurrentTime := Clock;
-        StartCPU := Clock;
+         CurrentTime := Clock;
+         StartCPU := Clock;
 
          Current_State := MotorController.GetState;
+
          if Current_State /= Previous_State then
             Previous_State := Current_State;
+            
             case Current_State is
                when ForwardCol =>
                   Play_While_Current (Current_State, AlarmFront);
@@ -80,7 +80,7 @@ package body Alarm is
          Put_Line("AlarmTask CPU Time: " & Duration'Image(To_Duration(Elapsed_CPU)) & " seconds");
 
 
-         delay until Ada.Real_Time.Clock + Check_Interval;
+         delay until CurrentTime + Check_Interval;
       end loop;
    end PlaySound;
 end Alarm;

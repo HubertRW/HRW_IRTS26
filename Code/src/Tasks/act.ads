@@ -4,6 +4,6 @@ with Controller;
 package Act is
 
    task ActTask with Priority => 4;
-   procedure Move(state : Controller.CarState);
+   procedure Move(state : Controller.CarState; front_next : Controller.AfterFrontState);
 
 end Act;
