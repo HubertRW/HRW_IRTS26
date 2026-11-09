@@ -3,7 +3,7 @@ with Ada.Execution_Time; use Ada.Execution_Time;
 with Brain; use Brain;
 with MicroBit.Console; use MicroBit.Console;
 with MicroBit; use MicroBit;
-with Sensor_Filter;
+
 
 package body Sense is
 
@@ -12,25 +12,17 @@ package body Sense is
    Elapsed_Time, Elapsed_CPU : Time_Span;
 
    task body ReadSensorsTask is
-      Front_History, Right_History, Left_History : Sensor_Filter.History;
+
       Acquisition_Start : Time;
 
-      procedure Publish(Sensor : Sensor_Id; Reading : in out sensor_distance;
-         History : in out Sensor_Filter.History; Started_At : Time)
+      procedure Publish(Sensor : Sensor_Id; Reading : in out sensor_distance; Started_At : Time)
       is
          Sample : Sensor_Reading;
       begin
-         if Filter_Enabled then
-            Sensor_Filter.Observe (History, Reading, Started_At);
-            Reading := Sensor_Filter.Value (History, Ada.Real_Time.Clock);
-            Sample := (Distance => Reading,
-                       Recorded_At => History.Last_Valid_At,
-                       Valid_Until => Sensor_Filter.Valid_Until (History));
-         else
-            Sample := (Distance => Reading,
-                       Recorded_At => Started_At,
-                       Valid_Until => Started_At + Sensor_Filter.Max_Age);
-         end if;
+         
+         Sample := (Distance => Reading, Recorded_At => Started_At, 
+            Valid_Until => Started_At + Milliseconds(300));
+
          BrainData.Update (Sensor, Sample);
       end Publish;
    begin
@@ -40,15 +32,15 @@ package body Sense is
 
          Acquisition_Start := Ada.Real_Time.Clock;
          FrontReading := Brain.sensor_distance (sensor1.Read);
-         Publish (Front, FrontReading, Front_History, Acquisition_Start);
+         Publish (Front, FrontReading, Acquisition_Start);
 
          Acquisition_Start := Ada.Real_Time.Clock;
          RightReading := Brain.sensor_distance (sensor2.Read);
-         Publish (Right, RightReading, Right_History, Acquisition_Start);
+         Publish (Right, RightReading, Acquisition_Start);
 
          Acquisition_Start := Ada.Real_Time.Clock;
          LeftReading := Brain.sensor_distance (sensor3.Read);
-         Publish (Left, LeftReading, Left_History, Acquisition_Start);
+         Publish (Left, LeftReading, Acquisition_Start);
 
          StopTime := Clock;
          StopCPU := Clock;
@@ -60,8 +52,8 @@ package body Sense is
          --  MicroBit.Console.Put_Line("Right: " & Brain.sensor_distance'Image(RightReading));
          --  MicroBit.Console.Put_Line("Left: " & Brain.sensor_distance'Image(LeftReading));
 
-         MicroBit.Console.Put_Line("Sense Elapsed time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
-         MicroBit.Console.Put_Line("Sense CPU time: " & Duration'Image(To_Duration(Elapsed_CPU)) & " seconds");
+         --  MicroBit.Console.Put_Line("Sense Elapsed time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
+         --  MicroBit.Console.Put_Line("Sense CPU time: " & Duration'Image(To_Duration(Elapsed_CPU)) & " seconds");
 
          delay until CurrentTime + Milliseconds(200);
       end loop;

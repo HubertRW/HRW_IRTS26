@@ -74,8 +74,8 @@ package body Think is
          Elapsed_Time := EndTime - CurrentTime;
          TimeCPU := StopCPU - StartCPU;
 
-         MicroBit.Console.Put_Line("Think Elapsed time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
-         MicroBit.Console.Put_Line("Think CPU time: " & Duration'Image(To_Duration(TimeCPU)) & " seconds");
+         --  MicroBit.Console.Put_Line("Think Elapsed time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
+         --  MicroBit.Console.Put_Line("Think CPU time: " & Duration'Image(To_Duration(TimeCPU)) & " seconds");
 
          delay until CurrentTime + Milliseconds(100);
       end loop;

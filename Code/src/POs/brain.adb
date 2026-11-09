@@ -1,3 +1,4 @@
+
 package body Brain is
    function Is_Fresh (Reading : Sensor_Reading; Now : Time) return Boolean is
      (Reading.Distance >= 0

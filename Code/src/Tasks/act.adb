@@ -18,9 +18,9 @@ package body Act is
             when ForwardCol =>
                case front_next is
                   when RightShift =>
-                     MicroBit.MotorDriver.Drive(Right, (2048,2048,2048,2048));                  
+                     MicroBit.MotorDriver.Drive(Right, (4095,4095,4095,4095));                  
                   when LeftShift =>
-                     MicroBit.MotorDriver.Drive(Left, (2048,2048,2048,2048));
+                     MicroBit.MotorDriver.Drive(Left, (4095,4095,4095,4095));
                   when ReverseShift =>
                      MicroBit.MotorDriver.Drive(Backward, (4095,4095,4095,4095));
                   end case;
@@ -60,8 +60,8 @@ package body Act is
             Elapsed_Time := StopTime - CurrentTime;
             TimeCPU := StopCPU - StartCPU;
 
-            MicroBit.Console.Put_Line("Act Elapsed Time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
-            MicroBit.Console.Put_Line("Act CPU time: " & Duration'Image(To_Duration(TimeCPU)) & " seconds");
+            --  MicroBit.Console.Put_Line("Act Elapsed Time: " & Duration'Image(To_Duration(Elapsed_Time)) & " seconds");
+            --  MicroBit.Console.Put_Line("Act CPU time: " & Duration'Image(To_Duration(TimeCPU)) & " seconds");
 
             delay until CurrentTime + Milliseconds(50);
 

@@ -2,7 +2,7 @@ with Ada.Real_Time;
 
 package Controller is
 
-   -- Provisional watchdog interval, to be validated on the car.
+
    Command_Timeout : constant Ada.Real_Time.Time_Span := Ada.Real_Time.Milliseconds(500);
 
    type CarState is (Idle, Driving, ForwardCol, RightCol, LeftCol);

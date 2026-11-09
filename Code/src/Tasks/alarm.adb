@@ -5,20 +5,26 @@ with MicroBit.Console; use MicroBit.Console;
 with Ada.Execution_Time; use Ada.Execution_Time;
 
 package body Alarm is
-   AlarmFront : constant Melody := ((G5, 25), (C5, 50), (F5, 50), (A5, 25));
-   AlarmRight : constant Melody := ((B4, 25), (A4, 50), (B4, 25), (A4, 50));
-   AlarmLeft : constant Melody := ((DS5, 50), (CS5, 25), (DS5, 50), (FS5, 25));
-   Check_Interval : constant Time_Span := Milliseconds (300);
+   AlarmFront : constant Melody := ((G5, 25), (C5, 15), (F5, 15), (A5, 25));
+   AlarmRight : constant Melody := ((B4, 25), (A4, 15), (B4, 25), (A4, 15));
+   AlarmLeft : constant Melody := ((DS5, 15), (CS5, 25), (DS5, 15), (FS5, 25));
+   Check_Interval : constant Time_Span := Milliseconds (500);
 
 
    procedure Play_While_Current (Expected : CarState; Sound : Melody) is
       Note_End, Wake_At, Now : Time;
+      Note_Elapsed : Time_Span;
+      Start_Note, Stop_Note : Time;
+
    begin
 
       for N of Sound loop
          exit when MotorController.GetState /= Expected;
+
+         Start_Note := Clock;
          MicroBit.Music.Play (27, N.P);
          Note_End := Ada.Real_Time.Clock + Milliseconds (N.Ms);
+
          loop
             exit when MotorController.GetState /= Expected;
             Now := Ada.Real_Time.Clock;
@@ -30,6 +36,11 @@ package body Alarm is
             end if;
 
             delay until Wake_At;
+
+            Stop_Note := Clock;
+            Note_Elapsed := Stop_Note - Start_Note;
+
+            Put_Line("Note duration: " & Duration'Image(To_Duration(Note_Elapsed)) & " seconds");
          end loop;
       end loop;
       MicroBit.Music.Play (27, Rest);
@@ -67,8 +78,7 @@ package body Alarm is
                   MicroBit.Music.Play (27, Rest);
             end case;
          end if;
-         -- No catch-up loop or pending melody queue. Always re-read the
-         -- effective state, including watchdog/reading expiry, on waking.
+
 
          EndTime := Clock;
          StopCPU := Clock;
